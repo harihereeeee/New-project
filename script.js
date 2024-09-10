@@ -1,61 +1,77 @@
-function init() {
-    let res_elm = document.createElement("div");
-    res_elm.innerHTML="Hello Myself Aco, How can I help you?" ;
-    res_elm.setAttribute("class","left");
- 
-    document.getElementById('msg').appendChild(res_elm);
-}
- 
- 
-document.getElementById('reply').addEventListener("click", async (e) => {
-    e.preventDefault();
- 
-    var req = document.getElementById('msg_send').value ;
- 
-    if (req == undefined || req== "") {
- 
+
+ // A simple chatbot that responds with some predefined answers
+ function chatbot(input) {
+    let output = "";
+    input = input.toLowerCase();
+    if (input.includes("hello") || input.includes("hi")) {
+      output = "Hello, nice to meet you!";
+    } else if (input.includes("how are you")) {
+      output = "I'm doing fine, thank you for asking.";
+    } else if (input.includes("what is your name")) {
+      output = "My name is Jarvis, I'm a chatbot.";
+    } else if (input.includes("what can you do")) {
+      output = "I can chat with you and answer some simple questions.";
+    } else if (input.includes("tell me a joke")) {
+      output = "Why did the chicken go to the seance? To get to the other side.";
+    } else {
+      output = "Sorry, I don't understand that. Please try something else.";
     }
-    else{
-     
-        var res = "";
-        await axios.get(`https://api.monkedev.com/fun/chat?msg=${req}`).then(data => {
-            res = JSON.stringify(data.data.response)
-        })
-           
-        let data_req = document.createElement('div');
-        let data_res = document.createElement('div');
- 
-        let container1 = document.createElement('div');
-        let container2 = document.createElement('div');
- 
-        container1.setAttribute("class","msgCon1");
-        container2.setAttribute("class","msgCon2");
- 
-        data_req.innerHTML = req ;
-        data_res.innerHTML = res ;
- 
- 
-        data_req.setAttribute("class","right");
-        data_res.setAttribute("class","left");
- 
-        let message = document.getElementById('msg');
- 
-         
-        message.appendChild(container1);
-        message.appendChild(container2);
- 
-        container1.appendChild(data_req);
-        container2.appendChild(data_res);
- 
-        document.getElementById('msg_send').value = "";
- 
-    function scroll() {
-        var scrollMsg = document.getElementById('msg')
-        scrollMsg.scrollTop = scrollMsg.scrollHeight ;
+    return output;
+  }
+
+  // Display the user message on the chat
+  function displayUserMessage(message) {
+    let chat = document.getElementById("chat");
+    let userMessage = document.createElement("div");
+    userMessage.classList.add("message");
+    userMessage.classList.add("user");
+    let userAvatar = document.createElement("div");
+    userAvatar.classList.add("avatar");
+    let userText = document.createElement("div");
+    userText.classList.add("text");
+    userText.innerHTML = message;
+    userMessage.appendChild(userAvatar);
+    userMessage.appendChild(userText);
+    chat.appendChild(userMessage);
+    chat.scrollTop = chat.scrollHeight;
+  }
+
+  // Display the bot message on the chat
+  function displayBotMessage(message) {
+    let chat = document.getElementById("chat");
+    let botMessage = document.createElement("div");
+    botMessage.classList.add("message");
+    botMessage.classList.add("bot");
+    let botAvatar = document.createElement("div");
+    botAvatar.classList.add("avatar");
+    let botText = document.createElement("div");
+    botText.classList.add("text");
+    botText.innerHTML = message;
+    botMessage.appendChild(botAvatar);
+    botMessage.appendChild(botText);
+    chat.appendChild(botMessage);
+    chat.scrollTop = chat.scrollHeight;
+  }
+
+  // Send the user message and get the bot response
+  function sendMessage() {
+    let input = document.getElementById("input").value;
+    if (input) {
+      displayUserMessage(input);
+      let output = chatbot(input);
+      setTimeout(function() {
+        displayBotMessage(output);
+      }, 1000);
+      document.getElementById("input").value = "";
     }
-    scroll();
- 
+  }
+
+  // Add a click event listener to the button
+  document.getElementById("button").addEventListener("click", sendMessage);
+
+  // Add a keypress event listener to the input
+  document.getElementById("input").addEventListener("keypress", function(event) {
+    if (event.keyCode == 13) {
+      sendMessage();
     }
- 
- 
-    });
+  });
